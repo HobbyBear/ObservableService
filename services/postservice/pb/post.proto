@@ -1,0 +1,17 @@
+syntax = "proto3";  //语法声明
+
+option go_package = "./;pb";
+
+service PostService {
+  rpc GetPost (GetPostReq) returns (GetPostResp) {}
+}
+
+message GetPostReq {
+  string Id = 1;
+}
+
+// HelloReply 响应数据格式
+message GetPostResp {
+  int64 uid= 1;
+  string text = 2;
+}

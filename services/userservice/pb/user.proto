@@ -1,0 +1,16 @@
+syntax = "proto3";  //语法声明
+
+option go_package = "./;pb";
+
+service UserService {
+  rpc GetUser (GetUserReq) returns (GetUserResp) {}
+}
+
+message GetUserReq {
+  int64 Id = 1;
+}
+
+message GetUserResp {
+  int64 uid= 1;
+  string name = 2;
+}
