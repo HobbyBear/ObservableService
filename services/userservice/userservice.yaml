@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userservice
+  labels:
+    app: userservice
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: userservice
+      labels:
+        app: userservice
+        micrometer-prometheus-discovery: 'true'
+    spec:
+      containers:
+        - name: userservice
+          image: xiongchuanhong/userservice2
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: userservice
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: userservice
+spec:
+  selector:
+    app: userservice
+  ports:
+    - port: 8083
+      targetPort: 8083
+      name: userservice
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: userserviceing
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /userservice
+            pathType: Prefix
+            backend:
+              service:
+                name: userservice
+                port:
+                  number: 8083
+
+---

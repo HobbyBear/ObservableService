@@ -8,9 +8,7 @@
 
 # todo list
 -[ ] 日志接入
--[ ] 配置中心
 -[ ] prometheus
--[ ] docker-compose部署
 -[ ] continuous pprof 
 -[ ] gin 接入
 -[ ] grpc 项目结构整理

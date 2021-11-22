@@ -5,6 +5,7 @@ import (
 	"ObservableService/servers/postserver/middlewire"
 	"ObservableService/trace"
 	"context"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"net"
 	"net/http"
@@ -12,22 +13,26 @@ import (
 
 func main() {
 
-	trace.Init()
+	//trace.Init()
 	defer trace.Close()
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/get_post",middlewire.Trace(api.GetPostHandler))
+	mux.HandleFunc("/postserver/get_post", middlewire.Trace(api.GetPostHandler))
+
+	http.Handle("/metrics", promhttp.Handler())
+	http.ListenAndServe(":8080", nil)
 
 	server := &http.Server{
 		Handler: mux,
 	}
-	listener,err := net.Listen("tcp","127.0.0.1:8080")
-	if err != nil{
+	// 本机上所有网卡的9090端口都会监听到
+	listener, err := net.Listen("tcp", "0.0.0.0:9090")
+	if err != nil {
 		log.Println("init listener fail ", err)
 		return
 	}
 	err = server.Serve(listener)
-	if err != nil{
+	if err != nil {
 		log.Println("init server fail ", err)
 		return
 	}

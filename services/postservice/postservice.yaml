@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postservice
+  labels:
+    app: postservice
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: postservice
+      labels:
+        app: postservice
+        micrometer-prometheus-discovery: 'true'
+    spec:
+      containers:
+        - name: postservice
+          image: xiongchuanhong/postservice3
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: postservice
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postservice
+spec:
+  selector:
+    app: postservice
+  ports:
+    - port: 8082
+      targetPort: 8082
+      name: postservice
+  type: ClusterIP
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: postserviceing
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /postservice
+            pathType: Prefix
+            backend:
+              service:
+                name: postservice
+                port:
+                  number: 8082
+
+---
