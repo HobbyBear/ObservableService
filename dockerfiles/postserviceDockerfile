@@ -9,5 +9,6 @@ RUN go mod tidy
 RUN go build
 #暴露端口
 EXPOSE 8082
+EXPOSE 8080
 #最终运行docker的命令
 ENTRYPOINT  ["./postservice"]

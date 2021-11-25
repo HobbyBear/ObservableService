@@ -3,7 +3,6 @@ package main
 import (
 	"ObservableService/services/postservice/impl"
 	"ObservableService/services/postservice/pb"
-	"ObservableService/trace"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -13,8 +12,6 @@ import (
 )
 
 func main() {
-	trace.Init()
-	defer trace.Close()
 
 	listener, err := net.Listen("tcp", "0.0.0.0:8082")
 	if err != nil {
@@ -22,10 +19,10 @@ func main() {
 		return
 	}
 
-	server := grpc.NewServer(grpc.UnaryInterceptor(trace.TraceSpanServerInterceptor()))
+	server := grpc.NewServer()
 
 	http.Handle("/metrics", promhttp.Handler())
-	http.ListenAndServe(":8080", nil)
+	go http.ListenAndServe(":8080", nil)
 
 	pb.RegisterPostServiceServer(server, &impl.Service{})
 	reflection.Register(server)

@@ -3,7 +3,6 @@ package main
 import (
 	"ObservableService/servers/postserver/api"
 	"ObservableService/servers/postserver/middlewire"
-	"ObservableService/trace"
 	"context"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
@@ -13,14 +12,11 @@ import (
 
 func main() {
 
-	//trace.Init()
-	defer trace.Close()
-
 	mux := http.NewServeMux()
 	mux.HandleFunc("/postserver/get_post", middlewire.Trace(api.GetPostHandler))
 
 	http.Handle("/metrics", promhttp.Handler())
-	http.ListenAndServe(":8080", nil)
+	go http.ListenAndServe(":8080", nil)
 
 	server := &http.Server{
 		Handler: mux,

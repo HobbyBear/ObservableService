@@ -2,7 +2,6 @@ package export
 
 import (
 	"ObservableService/services/postservice/pb"
-	"ObservableService/trace"
 	"context"
 	"google.golang.org/grpc"
 	"log"
@@ -12,7 +11,7 @@ var client *grpc.ClientConn
 
 func init() {
 	var err error
-	client, err = grpc.Dial("postservice:8082", grpc.WithInsecure(), grpc.WithUnaryInterceptor(trace.TraceSpanClientInterceptor()))
+	client, err = grpc.Dial("postservice:8082", grpc.WithInsecure())
 	if err != nil {
 		log.Fatal("init post client fail ", err)
 	}

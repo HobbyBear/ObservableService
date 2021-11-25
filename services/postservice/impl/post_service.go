@@ -8,18 +8,16 @@ import (
 )
 
 type Service struct {
-
 }
 
 func (s Service) GetPost(context context.Context, req *pb.GetPostReq) (*pb.GetPostResp, error) {
-	userResp,err := export.GetUser(context,13)
-	if err != nil{
+	userResp, err := export.GetUser(context, 13)
+	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
 	return &pb.GetPostResp{
-		Uid:                  userResp.Uid,
-		Text:                 "get post success",
-	},nil
+		Uid:  userResp.Uid,
+		Text: "get post success the user is " + userResp.Name,
+	}, nil
 }
-

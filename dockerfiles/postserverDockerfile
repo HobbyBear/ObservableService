@@ -4,11 +4,11 @@ FROM golang:latest
 WORKDIR $GOPATH/src/github.com/mygohttp
 #将服务器的go工程代码加入到docker容器中
 ADD . $GOPATH/src/github.com/mygohttp
-WORKDIR $GOPATH/src/github.com/mygohttp/services/userservice
+WORKDIR $GOPATH/src/github.com/mygohttp/servers/postserver
 RUN go mod tidy
 RUN go build
-#暴露端口
-EXPOSE 8083
-EXPOSE 8084
+#在pod上暴露的外部端口
+EXPOSE 9090
+EXPOSE 8080
 #最终运行docker的命令
-ENTRYPOINT  ["./userservice"]
+ENTRYPOINT  ["./postserver"]

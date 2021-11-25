@@ -11,12 +11,16 @@ spec:
       name: userservice
       labels:
         app: userservice
-        micrometer-prometheus-discovery: 'true'
     spec:
       containers:
         - name: userservice
-          image: xiongchuanhong/userservice2
+          image: xiongchuanhong/userservice3
           imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              hostPort: 8080
+            - containerPort: 8083
+              hostPort: 8083
       restartPolicy: Always
   selector:
     matchLabels:
@@ -26,12 +30,17 @@ apiVersion: v1
 kind: Service
 metadata:
   name: userservice
+  labels:
+    svc: userservice
 spec:
   selector:
     app: userservice
   ports:
     - port: 8083
       targetPort: 8083
+      name: userservice2
+    - port: 8080
+      targetPort: 8080
       name: userservice
   type: ClusterIP
 ---
@@ -54,3 +63,20 @@ spec:
                   number: 8083
 
 ---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: userservice
+  labels:
+    release: prometheus
+spec:
+  endpoints:
+    - port: userservice
+      path: /metrics
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - default
+  selector:
+    matchLabels:
+      svc: userservice
