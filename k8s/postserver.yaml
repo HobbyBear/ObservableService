@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: postserver
-          image: xiongchuanhong/posterver10
+          image: xiongchuanhong/postserver11
           imagePullPolicy: IfNotPresent
           ## 容器内部的端口
           ports:
