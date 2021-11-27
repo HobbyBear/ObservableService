@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: userservice
-          image: xiongchuanhong/userservice3
+          image: xiongchuanhong/userservice:v1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -63,20 +63,20 @@ spec:
                   number: 8083
 
 ---
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: userservice
-  labels:
-    release: prometheus
-spec:
-  endpoints:
-    - port: userservice
-      path: /metrics
-      scheme: http
-  namespaceSelector:
-    matchNames:
-      - default
-  selector:
-    matchLabels:
-      svc: userservice
+#apiVersion: monitoring.coreos.com/v1
+#kind: ServiceMonitor
+#metadata:
+#  name: userservice
+#  labels:
+#    release: prometheus
+#spec:
+#  endpoints:
+#    - port: userservice
+#      path: /metrics
+#      scheme: http
+#  namespaceSelector:
+#    matchNames:
+#      - default
+#  selector:
+#    matchLabels:
+#      svc: userservice

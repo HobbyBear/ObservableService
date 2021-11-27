@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: postserver
-          image: xiongchuanhong/posterver10
+          image: xiongchuanhong/postserver:v1
           imagePullPolicy: IfNotPresent
           ## 容器内部的端口
           ports:
@@ -28,7 +28,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: nginx
+  name: postserver
   annotations:
     ingress.kubernetes.io/ssl-redirect: "false"
 spec:
@@ -60,21 +60,21 @@ spec:
       port: 8080
       name: postserver
 ---
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: postserver
-  labels:
-    release: prometheus
-spec:
-  endpoints:
-    - port: postserver
-      path: /metrics
-      scheme: http
-  namespaceSelector:
-    matchNames:
-      - default
-  selector:
-    matchLabels:
-      svc: postserver
----
+#apiVersion: monitoring.coreos.com/v1
+#kind: ServiceMonitor
+#metadata:
+#  name: postserver
+#  labels:
+#    release: prometheus
+#spec:
+#  endpoints:
+#    - port: postserver
+#      path: /metrics
+#      scheme: http
+#  namespaceSelector:
+#    matchNames:
+#      - default
+#  selector:
+#    matchLabels:
+#      svc: postserver
+#---

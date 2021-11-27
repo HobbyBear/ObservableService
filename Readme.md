@@ -5,14 +5,9 @@
 
 代码展示了我对可观测性的思考与解决方案
 
+视频链接:
 
-# todo list
--[ ] 日志接入
--[ ] prometheus
--[ ] continuous pprof 
--[ ] gin 接入
--[ ] grpc 项目结构整理
--[ ] 项目组件初始化整理
+https://www.bilibili.com/video/BV14R4y147By?spm_id_from=333.999.0.0
 
 
 

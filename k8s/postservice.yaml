@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: postservice
-          image: xiongchuanhong/postservice3
+          image: xiongchuanhong/postservice:v1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -63,20 +63,20 @@ spec:
                   number: 8082
 
 ---
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: postservice
-  labels:
-    release: prometheus
-spec:
-  endpoints:
-    - port: postservice
-      path: /metrics
-      scheme: http
-  namespaceSelector:
-    matchNames:
-      - default
-  selector:
-    matchLabels:
-      svc: postservice
+#apiVersion: monitoring.coreos.com/v1
+#kind: ServiceMonitor
+#metadata:
+#  name: postservice
+#  labels:
+#    release: prometheus
+#spec:
+#  endpoints:
+#    - port: postservice
+#      path: /metrics
+#      scheme: http
+#  namespaceSelector:
+#    matchNames:
+#      - default
+#  selector:
+#    matchLabels:
+#      svc: postservice
