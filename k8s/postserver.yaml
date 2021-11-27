@@ -60,21 +60,21 @@ spec:
       port: 8080
       name: postserver
 ---
-#apiVersion: monitoring.coreos.com/v1
-#kind: ServiceMonitor
-#metadata:
-#  name: postserver
-#  labels:
-#    release: prometheus
-#spec:
-#  endpoints:
-#    - port: postserver
-#      path: /metrics
-#      scheme: http
-#  namespaceSelector:
-#    matchNames:
-#      - default
-#  selector:
-#    matchLabels:
-#      svc: postserver
-#---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: postserver
+  labels:
+    release: prometheus
+spec:
+  endpoints:
+    - port: postserver
+      path: /metrics
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - default
+  selector:
+    matchLabels:
+      svc: postserver
+---
