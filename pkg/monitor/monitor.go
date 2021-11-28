@@ -71,7 +71,7 @@ func initMetrics() {
 		prometheus.MustRegister(collector)
 	}
 	if defaultConfig.Metrics.On {
-		http.Handle("/metrics", promhttp.Handler())
+		http.Handle(defaultConfig.Metrics.Path, promhttp.Handler())
 		go func() {
 			err := http.ListenAndServe(":"+strconv.Itoa(defaultConfig.Metrics.Port), nil)
 			if err != nil {
