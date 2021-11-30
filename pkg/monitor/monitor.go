@@ -9,7 +9,12 @@ import (
 	"strconv"
 )
 
-const monitor = "monitor"
+const (
+	monitor = "monitor"
+
+	apiHttpType = "http"
+	apiGrpcType = "grpc"
+)
 
 type OptionsFunc func(config *Config)
 

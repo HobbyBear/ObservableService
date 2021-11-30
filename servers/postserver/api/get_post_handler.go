@@ -1,19 +1,15 @@
 package api
 
 import (
-	"ObservableService/pkg/logger"
-	"ObservableService/pkg/monitor"
 	"ObservableService/services/postservice/export"
-	"encoding/json"
-	"go.uber.org/zap"
+	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 )
 
-func GetPostHandler(resp http.ResponseWriter, req *http.Request) {
+func GetPostHandler(c *gin.Context) {
 
-	monitor.TestSetGauge(100)
-	postResp, err := export.GetPost(req.Context(), "12331")
+	postResp, err := export.GetPost(c, "12331")
 	if err != nil {
 		log.Println(err)
 		return
@@ -23,10 +19,5 @@ func GetPostHandler(resp http.ResponseWriter, req *http.Request) {
 	resMap["uid"] = postResp.Uid
 	resMap["text"] = postResp.Text
 
-	data, err := json.Marshal(resMap)
-	if err != nil {
-		logger.Error("marsh fail", zap.Error(err))
-		return
-	}
-	resp.Write(data)
+	c.JSON(http.StatusOK, resMap)
 }

@@ -5,6 +5,7 @@ import (
 	"ObservableService/pkg/monitor"
 	"ObservableService/servers/postserver/api"
 	"context"
+	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"net"
 	"net/http"
@@ -14,11 +15,13 @@ func main() {
 
 	monitor.Init(monitor.WithMetricsPort(8080))
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/postserver/get_post", api.GetPostHandler)
+	engine := gin.New()
+	engine.Use(monitor.ApiMetric)
+
+	engine.Handle(http.MethodGet, "postserver/get_post", api.GetPostHandler)
 
 	server := &http.Server{
-		Handler: mux,
+		Handler: engine,
 	}
 	// 本机上所有网卡的9090端口都会监听到
 	listener, err := net.Listen("tcp", "0.0.0.0:9090")

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"ObservableService/pkg/monitor"
 	"ObservableService/services/userservice/impl"
 	"ObservableService/services/userservice/pb"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -19,7 +20,7 @@ func main() {
 		return
 	}
 
-	server := grpc.NewServer()
+	server := grpc.NewServer(grpc.UnaryInterceptor(monitor.UnaryServerInterceptor))
 
 	http.Handle("/metrics", promhttp.Handler())
 	go http.ListenAndServe(":8080", nil)
