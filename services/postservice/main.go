@@ -4,15 +4,19 @@ import (
 	"ObservableService/pkg/monitor"
 	"ObservableService/services/postservice/impl"
 	"ObservableService/services/postservice/pb"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
+	jaegercfg "github.com/uber/jaeger-client-go/config"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
-	"net/http"
 )
 
 func main() {
+
+	monitor.Init(monitor.WithMetricsPort(8080), monitor.WithTraceReporterConfig(&jaegercfg.ReporterConfig{
+		CollectorEndpoint: "http://172.27.0.6:14268/api/traces",
+	}), monitor.WithTracerServiceName("postservice"))
+	defer monitor.Close()
 
 	listener, err := net.Listen("tcp", "0.0.0.0:8082")
 	if err != nil {
@@ -20,10 +24,7 @@ func main() {
 		return
 	}
 
-	server := grpc.NewServer(grpc.UnaryInterceptor(monitor.UnaryServerInterceptor))
-
-	http.Handle("/metrics", promhttp.Handler())
-	go http.ListenAndServe(":8080", nil)
+	server := grpc.NewServer(grpc.UnaryInterceptor(monitor.UnaryInterceptorChain(monitor.TraceUnaryServerInterceptor(), monitor.UnaryMetricServerInterceptor)))
 
 	pb.RegisterPostServiceServer(server, &impl.Service{})
 	reflection.Register(server)

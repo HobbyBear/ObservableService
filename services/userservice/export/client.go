@@ -1,6 +1,7 @@
 package export
 
 import (
+	"ObservableService/pkg/monitor"
 	"ObservableService/services/userservice/pb"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -11,7 +12,7 @@ var client *grpc.ClientConn
 
 func init() {
 	var err error
-	client, err = grpc.Dial("userservice:8083", grpc.WithInsecure())
+	client, err = grpc.Dial("userservice:8083", grpc.WithInsecure(), grpc.WithChainUnaryInterceptor(monitor.TraceUnaryClientInterceptor(), monitor.UnaryMetricClientInterceptor))
 	if err != nil {
 		log.Fatal("init post client fail ", err)
 	}

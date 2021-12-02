@@ -24,7 +24,23 @@ func ApiMetric(c *gin.Context) {
 	serverHandleHistogram.WithLabelValues(method, uri, apiHttpType).Observe(time.Since(start).Seconds())
 }
 
-func UnaryClientInterceptor(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) (err error) {
+func UnaryInterceptorChain(interceptors ...grpc.UnaryServerInterceptor) grpc.UnaryServerInterceptor {
+	build := func(c grpc.UnaryServerInterceptor, n grpc.UnaryHandler, info *grpc.UnaryServerInfo) grpc.UnaryHandler {
+		return func(ctx context.Context, req interface{}) (interface{}, error) {
+			return c(ctx, req, info, n)
+		}
+	}
+
+	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
+		chain := handler
+		for i := len(interceptors) - 1; i >= 0; i-- {
+			chain = build(interceptors[i], chain, info)
+		}
+		return chain(ctx, req)
+	}
+}
+
+func UnaryMetricClientInterceptor(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) (err error) {
 	beg := time.Now()
 	err = invoker(ctx, method, req, reply, cc, opts...)
 	var code codes.Code
@@ -38,7 +54,7 @@ func UnaryClientInterceptor(ctx context.Context, method string, req, reply inter
 	return err
 }
 
-func UnaryServerInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
+func UnaryMetricServerInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
 
 	beg := time.Now()
 	_, err = handler(ctx, req)

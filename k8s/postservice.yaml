@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: postservice
-          image: xiongchuanhong/postservice:v2.5
+          image: xiongchuanhong/postservice:v3.2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080

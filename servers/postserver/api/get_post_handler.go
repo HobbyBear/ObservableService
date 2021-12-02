@@ -9,7 +9,7 @@ import (
 
 func GetPostHandler(c *gin.Context) {
 
-	postResp, err := export.GetPost(c, "12331")
+	postResp, err := export.GetPost(c.Request.Context(), "12331")
 	if err != nil {
 		log.Println(err)
 		return

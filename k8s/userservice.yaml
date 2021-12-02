@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: userservice
-          image: xiongchuanhong/userservice:v2.5
+          image: xiongchuanhong/userservice:v3.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
